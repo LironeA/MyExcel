@@ -81,15 +81,31 @@ namespace Parser
                     row += c;
                 }
             }
-            {
-                
-            }
             var cell = SpreadSheet.cells[columnIndex - 1, Int32.Parse(row) - 1];
             cell.Calculate += thisCell.Evaluate;
+            if (CheckRecursion()) return null;
             if (cell == thisCell) throw new Exception("Recursion");
             if (cell.formula == null ) return cell.value;
             else return cell.formula.GetResult();
-        }  
+        }
+
+        public static bool CheckRecursion()
+        {
+            System.Diagnostics.StackTrace myTrace = new System.Diagnostics.StackTrace();
+            // If stack layer count less 3 , recursion impossible.
+            if (myTrace.FrameCount < 3)
+                return false;
+            System.IntPtr mh = myTrace.GetFrame(1).GetMethod().MethodHandle.Value;
+            for (int iCount = 2; iCount < myTrace.FrameCount; iCount++)
+            {
+                System.Reflection.MethodBase m = myTrace.GetFrame(iCount).GetMethod();
+                if (m.MethodHandle.Value == mh)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 
     public class OperationToken : Token

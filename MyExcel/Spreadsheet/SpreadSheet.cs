@@ -57,7 +57,7 @@ namespace MyExel.Spreadsheet
             var tempCell = cells[e.ColumnIndex, e.RowIndex];
             if (tempCell == null) return;
             if (tempCell.formula == null) return;
-            string value = GridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
+            string value = GridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value?.ToString();
             GridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = tempCell.formula.RawData;
         }
 
