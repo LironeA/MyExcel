@@ -1,4 +1,5 @@
 ﻿using MyExel.Spreadsheet;
+using System.Diagnostics;
 
 namespace MyExcel
 {
@@ -92,6 +93,17 @@ namespace MyExcel
 
             return result + (index % 26 == 0 ? "Z" : (char)(index % 26 + 64));
 
+        }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            About about = new About();
+            about.Show();
+        }
+
+        private void helpToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process.Start(new ProcessStartInfo { FileName = @"https://github.com/LironeA/MyExcel", UseShellExecute = true });
         }
     }
 }
