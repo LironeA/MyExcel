@@ -5,13 +5,13 @@ namespace Parser
 {
     public class BinaryTree
     {
-        public Token value;
+        public Token token;
         public BinaryTree[] Next;
 
         public BinaryTree(Token value, BinaryTree first, BinaryTree second = null)
         {
-            Console.WriteLine(value.Value + "><" + (first!=null ? first.value.Value : null)  + "><" + (second!=null ? second.value.Value : null));
-            this.value = value;
+            Console.WriteLine(value.RawData + "><" + (first!=null ? first.token.RawData : null)  + "><" + (second!=null ? second.token.RawData : null));
+            this.token = value;
             if (first == null && second == null)
             {
                 Next=null;
@@ -22,23 +22,27 @@ namespace Parser
         
         public dynamic GetResult()
         {
-            if (Next == null && value.Type == TokenType.Constant) return value.ToValue();
-            if (value.Type == TokenType.Pointer) return 1;
-            if (value.TokenOpertion.GetType().GetInterface("IBinaryOperation") != null)
+          
+            if(token is OperationToken)
             {
-                IBinaryOperation t = value.TokenOpertion;
-                return t.Evaluate(Next[0].GetResult(), Next[1].GetResult());
+                var tempToken = (token as OperationToken).ToValue();
+                if (tempToken is IBinaryOperation)
+                {
+                    var t = tempToken as IBinaryOperation;
+                    return t.Evaluate(Next[0].GetResult(), Next[1].GetResult());
+                }
+                else if (tempToken is IUnaryOperation)
+                {
+                    var t = tempToken as IUnaryOperation;
+                    return t.Evaluate(Next[1].GetResult());
+                }
+                else
+                {
+                    var t = tempToken as IBinaryLogicOperation;
+                    return t.Evaluate(Next[0].GetResult(), Next[1].GetResult());
+                }
             }
-            else if (value.TokenOpertion.GetType().GetInterface("IUnaryOperation") != null)
-            {
-                var t = value.TokenOpertion as IUnaryOperation;
-                return t.Evaluate(Next[1].GetResult());
-            }
-            else
-            {
-                var t = value.TokenOpertion as IBinaryLogicOperation;
-                return t.Evaluate(Next[0].GetResult(), Next[1].GetResult());
-            }
+            return token.ToValue();
         }
     }
 }

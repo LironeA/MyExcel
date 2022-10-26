@@ -37,27 +37,21 @@ namespace Parser
             { "max", null},
             { "min", null},
     };
-        public static void Parse()
+        public static void Parse(ref Formula f)
         {
-            Formula f = new Formula("(true & false) | true");
+
             GetTokens(ref f);
             UpdatePrioritets(ref f);
             try
             {
-                foreach (var token in f.Tokens)
-                {
-                    Console.WriteLine("<" + token.Value + ">:<" + token.Type + ">:<" + token.Priority + ">:<" +
-                                      token.TokenOpertion + ">:");
-                }
-
                 f.BinaryTree = GetBinaryTree(f.Tokens);
-                Console.WriteLine(f.BinaryTree.GetResult());
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 throw;
             }
+            MessageBox.Show("");
         }
 
         private static void UpdatePrioritets(ref Formula f)
@@ -66,11 +60,11 @@ namespace Parser
             int coef = 0;
             foreach (var token in tokens)
             {
-                if (token.Value == "(") coef += 10;
-                if (token.Value == ")") coef -= 10;
+                if (token.RawData == "(") coef += 10;
+                if (token.RawData == ")") coef -= 10;
                 token.Priority += coef;
             }
-            f.Tokens = tokens.Where(val => val.Value != "(" && val.Value != ")").ToArray();
+            f.Tokens = tokens.Where(val => val.RawData != "(" && val.RawData != ")").ToArray();
         }
 
         public static void GetTokens(ref Formula formula)
@@ -82,55 +76,55 @@ namespace Parser
             formula.Tokens = new Token[strings.Length];
             for (int i = 0; i < strings.Length; i++)
             {
-                var t = new Token(strings[i]);
-                DetermineTypeOfToken(ref t);
-                formula.Tokens[i] = t;
+                formula.Tokens[i] = DetermineTypeOfToken(strings[i]); ;
             }
         }
         
-        private static void DetermineTypeOfToken(ref Token t)
+        private static Token DetermineTypeOfToken(string data)
         {
-            if (SymbolsRegex.IsMatch(t.Value))
+            if (SymbolsRegex.IsMatch(data))
             {
+                var t = new SumbolToken(data);
                 t.Priority = 22;
-                t.Type = TokenType.Symbol;
-                return;
+                return t;
             }
 
-            if (ConstantRegex.IsMatch(t.Value))
-            {
-                t.Type = TokenType.Constant;
-                if (t.Value == "true" || t.Value == "false" )
+            if (ConstantRegex.IsMatch(data))
+            { 
+                if (data == "true" || data == "false" )
                 {
-                    t.ValueType = ValueType.Bool;
+                    var t = new BoolValueToken(data);
+                    t.Priority = 21;
+                    return t;
+
                 }
                 else
                 {
-                    t.ValueType = ValueType.Int;
+                    var t = new IntValueToken(data);
+                    t.Priority = 21;
+                    return t;
                 }
-                t.Priority = 21;
-                return;
             }
 
-            if (PointerRegex.IsMatch(t.Value))
+            if (PointerRegex.IsMatch(data))
             {
-                t.Type = TokenType.Pointer;
+                var t = new PointerToken(data);
                 t.Priority = 20;
-                return;
+                return t;
             }
-            if (OperationsRegex.IsMatch(t.Value))
+            if (OperationsRegex.IsMatch(data))
             {
-                t.Type = TokenType.Operator;
+                var t = new OperationToken(data);
                 DetermineOperator(ref t);
-                return;
+                return t;
             }
-            t.Type = TokenType.Invalid;
+            return null;
         }
 
-        private static void DetermineOperator(ref Token token)
+        private static void DetermineOperator(ref OperationToken token)
         {
-            token.TokenOpertion = OperationsList[token.Value];
-            token.Priority = GetIndexOfKey(OperationsList, token.Value);
+            token.TokenOpertion = OperationsList[token.RawData];
+            token.Priority = GetIndexOfKey(OperationsList, token.RawData);
         }
         
         private static int GetIndexOfKey(Dictionary<string,IOperation> tempDict, string key)

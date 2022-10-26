@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using MyExel.Spreadsheet;
 
 namespace MyExcel
 {
@@ -17,7 +9,6 @@ namespace MyExcel
             InitializeComponent();
             AddColumn(null,null);
             AddRow(null,null);
-
         }
 
 
@@ -48,6 +39,8 @@ namespace MyExcel
         private void AddRow(object sender, EventArgs e)
         {
             dataGridView1.Rows.Add();
+            SpreadSheet.UpdateSpreadSheet();
+
         }
 
         private void DeleteRow(object sender, EventArgs e)
@@ -61,7 +54,7 @@ namespace MyExcel
                 }
                 dataGridView1.Rows.RemoveAt(dataGridView1.Rows.Count - 1);
             }
-            
+            SpreadSheet.UpdateSpreadSheet();
         }
 
         private void AddColumn(object sender, EventArgs e)
@@ -70,6 +63,7 @@ namespace MyExcel
             string newColumnName = findColumName(ColumnCount + 1);
             dataGridView1.Columns.Add(newColumnName, newColumnName);
             dataGridView1.Columns[ColumnCount].SortMode = DataGridViewColumnSortMode.NotSortable;
+            SpreadSheet.UpdateSpreadSheet();
         }
 
         private void DeleteColumn(object sender, EventArgs e)
@@ -83,6 +77,7 @@ namespace MyExcel
                 }
                 dataGridView1.Columns.RemoveAt(dataGridView1.Columns.Count - 1);
             }
+            SpreadSheet.UpdateSpreadSheet();
         }
 
         private string findColumName(int index)
@@ -98,7 +93,5 @@ namespace MyExcel
             return result + (index % 26 == 0 ? "Z" : (char)(index % 26 + 64));
 
         }
-
-        
     }
 }
