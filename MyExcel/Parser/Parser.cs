@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.Remoting;
 using System.Text.RegularExpressions;
+using MyExel.Spreadsheet;
 using Operations;
 
 namespace Parser
@@ -36,10 +37,14 @@ namespace Parser
             { "|", new Or()},
             { "max", null},
             { "min", null},
-    };
-        public static void Parse(ref Formula f)
-        {
+        };
 
+        private static Cell curentCell;
+
+        public static void Parse(Cell cell)
+        {
+            curentCell = cell;
+            var f = cell.formula; 
             GetTokens(ref f);
             UpdatePrioritets(ref f);
             try
@@ -51,7 +56,6 @@ namespace Parser
                 Console.WriteLine(e);
                 throw;
             }
-            MessageBox.Show("");
         }
 
         private static void UpdatePrioritets(ref Formula f)
@@ -76,7 +80,7 @@ namespace Parser
             formula.Tokens = new Token[strings.Length];
             for (int i = 0; i < strings.Length; i++)
             {
-                formula.Tokens[i] = DetermineTypeOfToken(strings[i]); ;
+                formula.Tokens[i] = DetermineTypeOfToken(strings[i]);
             }
         }
         
@@ -86,6 +90,7 @@ namespace Parser
             {
                 var t = new SumbolToken(data);
                 t.Priority = 22;
+                t.thisCell = curentCell;
                 return t;
             }
 
@@ -95,6 +100,7 @@ namespace Parser
                 {
                     var t = new BoolValueToken(data);
                     t.Priority = 21;
+                    t.thisCell = curentCell;
                     return t;
 
                 }
@@ -102,6 +108,7 @@ namespace Parser
                 {
                     var t = new IntValueToken(data);
                     t.Priority = 21;
+                    t.thisCell = curentCell;
                     return t;
                 }
             }
@@ -110,12 +117,14 @@ namespace Parser
             {
                 var t = new PointerToken(data);
                 t.Priority = 20;
+                t.thisCell = curentCell;
                 return t;
             }
             if (OperationsRegex.IsMatch(data))
             {
                 var t = new OperationToken(data);
                 DetermineOperator(ref t);
+                t.thisCell = curentCell;
                 return t;
             }
             return null;

@@ -13,10 +13,10 @@ namespace Parser
         private int valueLenth => RawData.Length;
         
         public int Priority;
-
+        public Cell thisCell;
         public Token(string value)
         {
-            RawData = value;
+            RawData = value.ToLower();
         }
 
         public abstract dynamic ToValue();
@@ -60,6 +60,7 @@ namespace Parser
 
     public class PointerToken : Token
     {
+
         public PointerToken(string value) : base(value)
         {
         }
@@ -68,21 +69,27 @@ namespace Parser
         {
             int columnIndex = 0;
             string row = "";
-            foreach(var c in RawData)
+            for (int i = 0; i < RawData.Length; i++)
             {
-                if((int)c >= 65 && (int)c <= 90)
+                var c = RawData[i];
+                if ((int)c >= 97 && (int)c <= 122)
                 {
-                    columnIndex += ((int)c - 65) * 26;
+                    columnIndex += ((int)c - 96) * (int)Math.Pow(26, i);
                 }
                 else
                 {
                     row += c;
                 }
             }
-            var cell = SpreadSheet.cells[Int32.Parse(row) - 1, columnIndex];
-            if (cell.formula == null) return cell.value;
+            {
+                
+            }
+            var cell = SpreadSheet.cells[columnIndex - 1, Int32.Parse(row) - 1];
+            cell.Calculate += thisCell.Evaluate;
+            if (cell == thisCell) throw new Exception("Recursion");
+            if (cell.formula == null ) return cell.value;
             else return cell.formula.GetResult();
-        }
+        }  
     }
 
     public class OperationToken : Token

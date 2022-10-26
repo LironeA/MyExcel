@@ -24,14 +24,14 @@ namespace MyExel.Spreadsheet
             cells = temp;
         }
 
-        public static void UpdateSpreadSheet()
+        public static void UpdateSpreadSheet(bool adding)
         {
             var Form1 = Program.mainForm;
             if (Form1 == null) return;
             var dgv = Form1.dataGridView1;
             Cell[,] temp = new Cell[dgv.ColumnCount, dgv.RowCount];
-            var d0 = cells.GetLength(0) > temp.GetLength(0) ? cells.GetLength(0) : temp.GetLength(0);
-            var d1 = cells.GetLength(1) > temp.GetLength(1) ? cells.GetLength(1) : temp.GetLength(1) ;
+            var d0 = adding ? temp.GetLength(0) : cells.GetLength(0);
+            var d1 = adding ? temp.GetLength(1) : cells.GetLength(1);
             for (int i = 0; i < d0; i++)
             {
                 for(int j = 0; j < d1; j++)
@@ -41,7 +41,12 @@ namespace MyExel.Spreadsheet
                         temp[i, j] = new Cell();
                         continue;
                     }
-                    temp[i,j] = cells[i,j];
+                    if (i > temp.GetLength(0) - 1 || j > temp.GetLength(1) - 1)
+                    {
+                        continue;
+                    }
+                    temp[i, j] = cells[i, j];
+                    
                 }
             }
             cells = temp;
@@ -56,26 +61,11 @@ namespace MyExel.Spreadsheet
             GridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = tempCell.formula.RawData;
         }
 
-        public static void CellEvaluate(object sender, DataGridViewCellEventArgs e)
+        public static void CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
             var tempCell = cells[e.ColumnIndex, e.RowIndex];
-            if (GridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value == null) return;
-            string value = GridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
-            if (tempCell.formula != null && tempCell.formula.RawData == value)
-            {
-                GridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = tempCell.formula.GetResult();
-                return;
-            }
-            tempCell.formula = new Formula(value);
-            try
-            {
-                Parser.Parser.Parse(ref tempCell.formula);
-                GridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = tempCell.formula.GetResult();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
+            tempCell.e = e;
+            tempCell.Evaluate(false);
         }
         
 
