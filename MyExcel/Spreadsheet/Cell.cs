@@ -29,7 +29,6 @@ namespace MyExel.Spreadsheet
                     return;
                 }
                 this.formula = new Formula(value);
-                
                 Parser.Parser.Parse(this);
                 GridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = this.formula.GetResult();
                 Calculate?.Invoke(true);

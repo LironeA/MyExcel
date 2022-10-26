@@ -14,7 +14,7 @@ namespace Parser
         private static readonly Regex DivadersRegex = new Regex(@"(<=|>=|==|<>|[\|\&\\])|([\+\-\*\(\)\^\;\/\%\!\<\>\\])");
         private static readonly Regex ConstantRegex = new Regex(@"^[0-9]+|true|false");
         private static readonly Regex PointerRegex = new Regex(@"^[A-Za-z]+\d+");
-        private static readonly Regex OperationsRegex = new Regex(@"([\|\&\\])|([\+\-\*\^\/\!\%\<=\>=\<$\>$\\]|[a-z]+)");
+        private static readonly Regex OperationsRegex = new Regex(@"([\|\&\\])|([\+\-\*\^\/\!\%\<=\>=\<$\>$\\]|[inc|dec]|[a-z]+)");
         private static readonly Regex SymbolsRegex = new Regex(@"([\(\)\;\\])");
         private static readonly Dictionary<string , IOperation> OperationsList = new Dictionary<string, IOperation>()
         {
@@ -43,12 +43,16 @@ namespace Parser
 
         public static void Parse(Cell cell)
         {
-            curentCell = cell;
-            var f = cell.formula; 
-            GetTokens(ref f);
-            UpdatePrioritets(ref f);
             try
             {
+                curentCell = cell;
+                var f = cell.formula; 
+                GetTokens(ref f);
+                foreach(var t in f.Tokens)
+                {
+                    if (t == null) throw new Exception("Invalid Token");
+                }
+                UpdatePrioritets(ref f);
                 f.BinaryTree = GetBinaryTree(f.Tokens);
             }
             catch (Exception e)
@@ -61,9 +65,11 @@ namespace Parser
         private static void UpdatePrioritets(ref Formula f)
         {
             var tokens = f.Tokens;
+            if (tokens == null || tokens.Length == 0) throw new Exception("Invalid Token");
             int coef = 0;
             foreach (var token in tokens)
             {
+                if (token == null) throw new Exception("Invalid Token");
                 if (token.RawData == "(") coef += 10;
                 if (token.RawData == ")") coef -= 10;
                 token.Priority += coef;
@@ -112,14 +118,6 @@ namespace Parser
                     return t;
                 }
             }
-
-            if (PointerRegex.IsMatch(data))
-            {
-                var t = new PointerToken(data);
-                t.Priority = 20;
-                t.thisCell = curentCell;
-                return t;
-            }
             if (OperationsRegex.IsMatch(data))
             {
                 var t = new OperationToken(data);
@@ -127,6 +125,14 @@ namespace Parser
                 t.thisCell = curentCell;
                 return t;
             }
+            if (PointerRegex.IsMatch(data))
+            {
+                var t = new PointerToken(data);
+                t.Priority = 20;
+                t.thisCell = curentCell;
+                return t;
+            }
+            
             return null;
         }
 

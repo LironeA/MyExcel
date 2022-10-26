@@ -15,7 +15,7 @@ namespace Parser
 
         public dynamic GetResult()
         {
-            Result = BinaryTree.GetResult();
+            Result = BinaryTree?.GetResult();
             return Result;
         }
         

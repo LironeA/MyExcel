@@ -37,8 +37,8 @@ namespace Operations
             for (dynamic i = 0; i < r; i++)
             {
                 temp *= l;
+                if (temp > Int32.MaxValue) throw new OverflowException();
             }
-
             return temp;
         }
     }

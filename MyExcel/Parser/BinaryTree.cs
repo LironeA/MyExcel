@@ -10,7 +10,6 @@ namespace Parser
 
         public BinaryTree(Token value, BinaryTree first, BinaryTree second = null)
         {
-            Console.WriteLine(value.RawData + "><" + (first!=null ? first.token.RawData : null)  + "><" + (second!=null ? second.token.RawData : null));
             this.token = value;
             if (first == null && second == null)
             {

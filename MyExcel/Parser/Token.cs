@@ -83,8 +83,13 @@ namespace Parser
             }
             var cell = SpreadSheet.cells[columnIndex - 1, Int32.Parse(row) - 1];
             cell.Calculate += thisCell.Evaluate;
-            if (CheckRecursion()) return null;
-            if (cell == thisCell) throw new Exception("Recursion");
+            if (CheckRecursion())
+            {
+                throw new Exception("Recursion");
+                //return null;
+            }
+                
+            //if (cell == thisCell) throw new Exception("Recursion");
             if (cell.formula == null ) return cell.value;
             else return cell.formula.GetResult();
         }
@@ -93,7 +98,7 @@ namespace Parser
         {
             System.Diagnostics.StackTrace myTrace = new System.Diagnostics.StackTrace();
             // If stack layer count less 3 , recursion impossible.
-            if (myTrace.FrameCount < 3)
+            if (myTrace.FrameCount < 100)
                 return false;
             System.IntPtr mh = myTrace.GetFrame(1).GetMethod().MethodHandle.Value;
             for (int iCount = 2; iCount < myTrace.FrameCount; iCount++)
