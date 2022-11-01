@@ -1,9 +1,4 @@
 ﻿using MyExel.Spreadsheet;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace MyExcel
 {
@@ -20,11 +15,8 @@ namespace MyExcel
             Application.SetCompatibleTextRenderingDefault(false);
             mainForm = new Form1();
             SpreadSheet.CreateSpreadSheet();
-            mainForm.dataGridView1.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(SpreadSheet.CellValueChanged);
-            mainForm.dataGridView1.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(SpreadSheet.CellBeginEdit);
-            mainForm.dataGridView1.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(SpreadSheet.CellEndEdit);
             Application.Run(mainForm);
-            
+
         }
     }
 }

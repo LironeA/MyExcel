@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using Operations;
-using MyExcel;
-using MyExel.Spreadsheet;
+﻿using MyExel.Spreadsheet;
 
 namespace Parser
 {
     public abstract class Token
     {
         public string RawData { get; set; }
-        
+
         private int valueLenth => RawData.Length;
-        
+
         public int Priority;
         public Cell thisCell;
         public Token(string value)
@@ -86,18 +82,14 @@ namespace Parser
             if (CheckRecursion())
             {
                 throw new Exception("Recursion");
-                //return null;
             }
-                
-            //if (cell == thisCell) throw new Exception("Recursion");
-            if (cell.formula == null ) return cell.value;
+            if (cell.formula == null) return cell.value;
             else return cell.formula.GetResult();
         }
 
         public static bool CheckRecursion()
         {
             System.Diagnostics.StackTrace myTrace = new System.Diagnostics.StackTrace();
-            // If stack layer count less 3 , recursion impossible.
             if (myTrace.FrameCount < 100)
                 return false;
             System.IntPtr mh = myTrace.GetFrame(1).GetMethod().MethodHandle.Value;

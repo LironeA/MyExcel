@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Parser;
-using MyExcel;
+﻿using MyExcel;
 
 namespace MyExel.Spreadsheet
 {
@@ -34,9 +27,9 @@ namespace MyExel.Spreadsheet
             var d1 = adding ? temp.GetLength(1) : cells.GetLength(1);
             for (int i = 0; i < d0; i++)
             {
-                for(int j = 0; j < d1; j++)
+                for (int j = 0; j < d1; j++)
                 {
-                    if (i > cells.GetLength(0)-1 || j > cells.GetLength(1)-1)
+                    if (i > cells.GetLength(0) - 1 || j > cells.GetLength(1) - 1)
                     {
                         temp[i, j] = new Cell();
                         continue;
@@ -46,7 +39,7 @@ namespace MyExel.Spreadsheet
                         continue;
                     }
                     temp[i, j] = cells[i, j];
-                    
+
                 }
             }
             cells = temp;
@@ -57,8 +50,9 @@ namespace MyExel.Spreadsheet
             var tempCell = cells[e.ColumnIndex, e.RowIndex];
             if (tempCell == null) return;
             if (tempCell.formula == null) return;
-            string value = GridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value?.ToString();
-            GridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = tempCell.formula.RawData;
+            var GVCell = GridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
+            string value = GVCell.Value?.ToString();
+            GVCell.Value = tempCell.formula.RawData;
         }
 
         public static void CellEndEdit(object sender, DataGridViewCellEventArgs e)
@@ -67,7 +61,7 @@ namespace MyExel.Spreadsheet
             tempCell.e = e;
             tempCell.Evaluate(false);
         }
-        
+
 
         public static void CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {

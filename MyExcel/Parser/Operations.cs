@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq.Expressions;
-
-namespace Operations
+﻿namespace Operations
 {
     public interface IOperation
     {
@@ -16,12 +13,12 @@ namespace Operations
     {
         TR Evaluate<TR, TL>(TR left, TL right);
     }
-    
+
     public interface IBinaryLogicOperation : IOperation
     {
         bool Evaluate<TR, TL>(TR left, TL right);
     }
-    
+
     public interface IMultyOperation : IOperation
     {
         T Evaluate<T>(params T[] list);
@@ -29,70 +26,56 @@ namespace Operations
 
     public class Exponentiate : IBinaryOperation
     {
-        public TR Evaluate<TR,TL>(TR left, TL right)
+        public TR Evaluate<TR, TL>(TR left, TL right)
         {
             dynamic l = left;
             dynamic r = right;
-            dynamic temp = 1;
+            long temp = 1;
             for (dynamic i = 0; i < r; i++)
             {
+                if ((temp * l) / l != temp) throw new OverflowException();
                 temp *= l;
-                if (temp > Int32.MaxValue) throw new OverflowException();
             }
-            return temp;
+            return (dynamic)temp;
         }
     }
 
     public class Multiply : IBinaryOperation
     {
-        public TR Evaluate<TR,TL>(TR left, TL right)
+        public TR Evaluate<TR, TL>(TR left, TL right)
         {
             dynamic l = left;
             dynamic r = right;
+            if ((r * l) / l != r) throw new OverflowException();
             return l * r;
         }
     }
-    
+
     public class Divide : IBinaryOperation
     {
-        public TR Evaluate<TR,TL>(TR left, TL right)
+        public TR Evaluate<TR, TL>(TR left, TL right)
         {
             dynamic l = left;
             dynamic r = right;
-            try
-            {
-                return l / r;
-            }
-            catch (DivideByZeroException)
-            {
-                Console.WriteLine("Divide by zero, lol");
-                return default;
-            }
+            if (r == 0) throw new DivideByZeroException();
+            return l / r;
         }
-        
+
     }
-    
+
     public class Mod : IBinaryOperation
     {
-        public TR Evaluate<TR,TL>(TR left, TL right)
+        public TR Evaluate<TR, TL>(TR left, TL right)
         {
             dynamic l = left;
             dynamic r = right;
-            try
-            {
-                return l % r;
-            }
-            catch (DivideByZeroException)
-            {
-                Console.WriteLine("Divide by zero, lol");
-                return default;
-            }
+            return l % r;
         }
     }
 
     public class Add : IBinaryOperation
     {
-        public TR Evaluate<TR,TL>(TR left, TL right)
+        public TR Evaluate<TR, TL>(TR left, TL right)
         {
             dynamic l = left;
             dynamic r = right;
@@ -102,7 +85,7 @@ namespace Operations
 
     public class Substruct : IBinaryOperation
     {
-        public TR Evaluate<TR,TL>(TR left, TL right)
+        public TR Evaluate<TR, TL>(TR left, TL right)
         {
             dynamic l = left;
             dynamic r = right;
@@ -127,7 +110,7 @@ namespace Operations
             return e = e - 1;
         }
     }
-    
+
     public class Not : IUnaryOperation
     {
         public T Evaluate<T>(T expresion)
@@ -141,10 +124,10 @@ namespace Operations
             return -e;
         }
     }
-    
+
     public class SmallerThan : IBinaryLogicOperation
     {
-        public bool Evaluate<TR,TL>(TR left, TL right)
+        public bool Evaluate<TR, TL>(TR left, TL right)
         {
             dynamic l = left;
             dynamic r = right;
@@ -161,10 +144,10 @@ namespace Operations
             return l < r;
         }
     }
-    
+
     public class SmallerEqualThan : IBinaryLogicOperation
     {
-        public bool Evaluate<TR,TL>(TR left, TL right)
+        public bool Evaluate<TR, TL>(TR left, TL right)
         {
             dynamic l = left;
             dynamic r = right;
@@ -181,7 +164,7 @@ namespace Operations
             return l <= r;
         }
     }
-    
+
     public class Equal : IBinaryLogicOperation
     {
         public bool Evaluate<TR, TL>(TR left, TL right)
@@ -191,7 +174,7 @@ namespace Operations
             return l == r;
         }
     }
-    
+
     public class NotEqual : IBinaryLogicOperation
     {
         public bool Evaluate<TR, TL>(TR left, TL right)
@@ -201,7 +184,7 @@ namespace Operations
             return l != r;
         }
     }
-    
+
     public class And : IBinaryLogicOperation
     {
         public bool Evaluate<TR, TL>(TR left, TL right)
@@ -212,7 +195,7 @@ namespace Operations
             return l && r;
         }
     }
-    
+
     public class Or : IBinaryLogicOperation
     {
         public bool Evaluate<TR, TL>(TR left, TL right)

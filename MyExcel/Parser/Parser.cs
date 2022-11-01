@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Runtime.Remoting;
-using System.Text.RegularExpressions;
-using MyExel.Spreadsheet;
+﻿using MyExel.Spreadsheet;
 using Operations;
+using System.Text.RegularExpressions;
 
 namespace Parser
 {
@@ -16,7 +11,7 @@ namespace Parser
         private static readonly Regex PointerRegex = new Regex(@"^[A-Za-z]+\d+");
         private static readonly Regex OperationsRegex = new Regex(@"([\|\&\\])|([\+\-\*\^\/\!\%\<=\>=\<$\>$\\]|[inc|dec]|[a-z]+)");
         private static readonly Regex SymbolsRegex = new Regex(@"([\(\)\;\\])");
-        private static readonly Dictionary<string , IOperation> OperationsList = new Dictionary<string, IOperation>()
+        private static readonly Dictionary<string, IOperation> OperationsList = new Dictionary<string, IOperation>()
         {
             {"^", new Exponentiate()},
             { "*", new Multiply()},
@@ -46,9 +41,9 @@ namespace Parser
             try
             {
                 curentCell = cell;
-                var f = cell.formula; 
+                var f = cell.formula;
                 GetTokens(ref f);
-                foreach(var t in f.Tokens)
+                foreach (var t in f.Tokens)
                 {
                     if (t == null) throw new Exception("Invalid Token");
                 }
@@ -89,7 +84,7 @@ namespace Parser
                 formula.Tokens[i] = DetermineTypeOfToken(strings[i]);
             }
         }
-        
+
         private static Token DetermineTypeOfToken(string data)
         {
             if (SymbolsRegex.IsMatch(data))
@@ -101,8 +96,8 @@ namespace Parser
             }
 
             if (ConstantRegex.IsMatch(data))
-            { 
-                if (data == "true" || data == "false" )
+            {
+                if (data == "true" || data == "false")
                 {
                     var t = new BoolValueToken(data);
                     t.Priority = 21;
@@ -132,7 +127,7 @@ namespace Parser
                 t.thisCell = curentCell;
                 return t;
             }
-            
+
             return null;
         }
 
@@ -141,8 +136,8 @@ namespace Parser
             token.TokenOpertion = OperationsList[token.RawData];
             token.Priority = GetIndexOfKey(OperationsList, token.RawData);
         }
-        
-        private static int GetIndexOfKey(Dictionary<string,IOperation> tempDict, string key)
+
+        private static int GetIndexOfKey(Dictionary<string, IOperation> tempDict, string key)
         {
             int index = 0;
             foreach (string value in tempDict.Keys)
@@ -172,12 +167,12 @@ namespace Parser
 
         private static BinaryTree GetBinaryTree(Token[] tokens)
         {
-            if (tokens.Length == 0) return null; 
-            if(tokens.Length == 1) return new BinaryTree(tokens[0],null, null);
+            if (tokens.Length == 0) return null;
+            if (tokens.Length == 1) return new BinaryTree(tokens[0], null, null);
             var index = FindMinInArray(tokens);
             var left = tokens.Skip(0).Take(index).ToArray();
-            var right = tokens.Skip(index+1).ToArray();
-            return new BinaryTree(tokens[index],GetBinaryTree(left), GetBinaryTree(right));
+            var right = tokens.Skip(index + 1).ToArray();
+            return new BinaryTree(tokens[index], GetBinaryTree(left), GetBinaryTree(right));
 
         }
     }

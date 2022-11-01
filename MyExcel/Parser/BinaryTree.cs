@@ -1,5 +1,4 @@
-﻿using System;
-using Operations;
+﻿using Operations;
 
 namespace Parser
 {
@@ -13,35 +12,36 @@ namespace Parser
             this.token = value;
             if (first == null && second == null)
             {
-                Next=null;
+                Next = null;
                 return;
             }
-            Next = new BinaryTree[2] {first, second};
+            Next = new BinaryTree[2] { first, second };
         }
-        
+
         public dynamic GetResult()
         {
-          
-            if(token is OperationToken)
-            {
-                var tempToken = (token as OperationToken).ToValue();
-                if (tempToken is IBinaryOperation)
+
+                if (token is OperationToken)
                 {
-                    var t = tempToken as IBinaryOperation;
-                    return t.Evaluate(Next[0].GetResult(), Next[1].GetResult());
+                    var tempToken = (token as OperationToken).ToValue();
+                    if (tempToken is IBinaryOperation)
+                    {
+                        var t = tempToken as IBinaryOperation;
+                        return t.Evaluate(Next[0].GetResult(), Next[1].GetResult());
+                    }
+                    else if (tempToken is IUnaryOperation)
+                    {
+                        var t = tempToken as IUnaryOperation;
+                        return t.Evaluate(Next[1].GetResult());
+                    }
+                    else
+                    {
+                        var t = tempToken as IBinaryLogicOperation;
+                        return t.Evaluate(Next[0].GetResult(), Next[1].GetResult());
+                    }
                 }
-                else if (tempToken is IUnaryOperation)
-                {
-                    var t = tempToken as IUnaryOperation;
-                    return t.Evaluate(Next[1].GetResult());
-                }
-                else
-                {
-                    var t = tempToken as IBinaryLogicOperation;
-                    return t.Evaluate(Next[0].GetResult(), Next[1].GetResult());
-                }
-            }
-            return token.ToValue();
+                return token.ToValue();
+            
         }
     }
 }

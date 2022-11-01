@@ -8,8 +8,11 @@ namespace MyExcel
         public Form1()
         {
             InitializeComponent();
-            AddColumn(null,null);
-            AddRow(null,null);
+            this.dataGridView1.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(SpreadSheet.CellValueChanged);
+            this.dataGridView1.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(SpreadSheet.CellBeginEdit);
+            this.dataGridView1.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(SpreadSheet.CellEndEdit);
+            AddColumn(null, null);
+            AddRow(null, null);
         }
 
 
@@ -21,14 +24,10 @@ namespace MyExcel
 
             var centerFormat = new StringFormat()
             {
-                // right alignment might actually make more sense for numbers
                 Alignment = StringAlignment.Center,
-
                 LineAlignment = StringAlignment.Center
             };
-            //get the size of the string
             Size textSize = TextRenderer.MeasureText(rowIdx, this.Font);
-            //if header width lower then string width then resize
             if (grid.RowHeadersWidth < textSize.Width + 40)
             {
                 grid.RowHeadersWidth = textSize.Width + 40;
@@ -48,7 +47,7 @@ namespace MyExcel
         {
             if (MessageBox.Show("R U sure?", "", MessageBoxButtons.OKCancel) == DialogResult.OK)
             {
-                if(dataGridView1.Rows.Count <= 1)
+                if (dataGridView1.Rows.Count <= 1)
                 {
                     MessageBox.Show("Must be at least 1 row", "ERROR");
                     return;
@@ -69,7 +68,7 @@ namespace MyExcel
 
         private void DeleteColumn(object sender, EventArgs e)
         {
-            if (MessageBox.Show("R U sure?", "", MessageBoxButtons.OKCancel) == DialogResult.OK)
+            if (MessageBox.Show("Ви впевнені?", "", MessageBoxButtons.OKCancel) == DialogResult.OK)
             {
                 if (dataGridView1.Columns.Count <= 1)
                 {
@@ -97,13 +96,31 @@ namespace MyExcel
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            About about = new About();
-            about.Show();
+            //AboutBox1 about = new AboutBox1();
+            //about.Show();
         }
 
         private void helpToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Process.Start(new ProcessStartInfo { FileName = @"https://github.com/LironeA/MyExcel", UseShellExecute = true });
+            //Help about = new Help();
+            //about.Show();
+            //Process.Start(new ProcessStartInfo { FileName = @"https://github.com/LironeA/MyExcel", UseShellExecute = true });
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Ви впевнені?", "", MessageBoxButtons.OKCancel) == DialogResult.OK)
+            {
+                System.Windows.Forms.Application.Exit();
+            }
+        }
+
+        private void newToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Ви впевнені?", "", MessageBoxButtons.OKCancel) == DialogResult.OK)
+            {
+                Application.Restart();
+            }
         }
     }
 }

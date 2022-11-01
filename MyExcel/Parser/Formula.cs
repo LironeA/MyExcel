@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Parser
+﻿namespace Parser
 {
     public class Formula
     {
@@ -18,6 +16,6 @@ namespace Parser
             Result = BinaryTree?.GetResult();
             return Result;
         }
-        
+
     }
 }
