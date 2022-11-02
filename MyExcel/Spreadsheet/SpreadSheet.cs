@@ -48,6 +48,7 @@ namespace MyExel.Spreadsheet
         public static void CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
         {
             var tempCell = cells[e.ColumnIndex, e.RowIndex];
+            tempCell.e = new DataGridViewCellEventArgs(e.ColumnIndex, e.RowIndex);
             if (tempCell.formula == null) return;
             var GVCell = GridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
             GVCell.Value = tempCell.formula.RawData;

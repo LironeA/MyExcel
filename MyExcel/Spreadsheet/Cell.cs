@@ -8,7 +8,7 @@ namespace MyExel.Spreadsheet
         public string value;
         public Formula formula;
         public DataGridViewCellEventArgs e;
-        public delegate void Edited(bool ReCalculate);
+        public delegate void Edited(bool ReCalculate, int x, int y);
         public event Edited? Calculate;
 
         public bool IsSubscribed(EventHandler Delegate)
@@ -31,16 +31,29 @@ namespace MyExel.Spreadsheet
             return false;
         }
 
-        public void Evaluate(bool ReCalculate)
+        public void Evaluate(bool ReCalculate, int x = -1, int y = -1)
         {
             var GridView = Program.mainForm.dataGridView1;
-            var GVCell = GridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
+            DataGridViewCell GVCell;
+            int X, Y;
+            if (x >= 0 && y >= 0) 
+            {
+                GVCell = GridView.Rows[y].Cells[x];
+                X = x;
+                Y = y;
+            }
+            else
+            {
+                GVCell = GridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
+                X = e.RowIndex;
+                Y = e.ColumnIndex;
+            }
             try
             {
                 if (ReCalculate)
                 {
                     GVCell.Value = this.formula.GetResult();
-                    Calculate?.Invoke(true);
+                    Calculate?.Invoke(true, -1, -1);
                     GVCell.ErrorText = "";
                     return;
                 }
@@ -60,11 +73,11 @@ namespace MyExel.Spreadsheet
                 }
                 else
                 {
-                    SpreadSheet.cells[e.ColumnIndex, e.RowIndex].value = null;
-                    SpreadSheet.cells[e.ColumnIndex, e.RowIndex].formula = null;
+                    SpreadSheet.cells[X, Y].value = null;
+                    SpreadSheet.cells[X, Y].formula = null;
                     GVCell.Value = null;
                 }
-                Calculate?.Invoke(true);
+                Calculate?.Invoke(true, -1, -1);
                 GVCell.ErrorText = "";
             }
             catch(Microsoft.CSharp.RuntimeBinder.RuntimeBinderException)
@@ -73,11 +86,11 @@ namespace MyExel.Spreadsheet
                 GVCell.ErrorText = "Cant resolve operation for diferent types";
                 MessageBox.Show("Cant do operation on diferent types(bool + bool, bool + 1, ets )");
             }
-            catch (Exception ex)
+            /*catch (Exception ex)
             {
                 GVCell.Value = ex.Message;
                 GVCell.ErrorText = ex.Message;
-            }
+            }*/
 
         }
 
