@@ -4,7 +4,7 @@ namespace MyExel.Spreadsheet
 {
     static class SpreadSheet
     {
-        public static DataGridView GridView { get; set; }
+        public static DataGridView ?GridView { get; set; }
         public static Cell[,] cells;
 
         public static void CreateSpreadSheet()
@@ -48,10 +48,8 @@ namespace MyExel.Spreadsheet
         public static void CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
         {
             var tempCell = cells[e.ColumnIndex, e.RowIndex];
-            if (tempCell == null) return;
             if (tempCell.formula == null) return;
             var GVCell = GridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
-            string value = GVCell.Value?.ToString();
             GVCell.Value = tempCell.formula.RawData;
         }
 

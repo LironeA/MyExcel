@@ -20,27 +20,27 @@ namespace Parser
 
         public dynamic GetResult()
         {
-
-                if (token is OperationToken)
+            if (token == null) throw new Exception(message: "One of the token is invalid");
+            if (token is OperationToken)
+            {
+                var tempToken = (token as OperationToken).ToValue();
+                if (tempToken is IBinaryOperation)
                 {
-                    var tempToken = (token as OperationToken).ToValue();
-                    if (tempToken is IBinaryOperation)
-                    {
-                        var t = tempToken as IBinaryOperation;
-                        return t.Evaluate(Next[0].GetResult(), Next[1].GetResult());
-                    }
-                    else if (tempToken is IUnaryOperation)
-                    {
-                        var t = tempToken as IUnaryOperation;
-                        return t.Evaluate(Next[1].GetResult());
-                    }
-                    else
-                    {
-                        var t = tempToken as IBinaryLogicOperation;
-                        return t.Evaluate(Next[0].GetResult(), Next[1].GetResult());
-                    }
+                    var t = tempToken as IBinaryOperation;
+                    return t.Evaluate(Next[0].GetResult(), Next[1].GetResult());
                 }
-                return token.ToValue();
+                else if (tempToken is IUnaryOperation)
+                {
+                    var t = tempToken as IUnaryOperation;
+                    return t.Evaluate(Next[1].GetResult());
+                }
+                else
+                {
+                    var t = tempToken as IBinaryLogicOperation;
+                    return t.Evaluate(Next[0].GetResult(), Next[1].GetResult());
+                }
+            }
+            return token.ToValue();
             
         }
     }

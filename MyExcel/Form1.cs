@@ -20,8 +20,8 @@ namespace MyExcel
         private void dataGridView1_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
         {
             var grid = sender as DataGridView;
+            if (grid == null) return;
             var rowIdx = (e.RowIndex + 1).ToString();
-
             var centerFormat = new StringFormat()
             {
                 Alignment = StringAlignment.Center,
@@ -96,14 +96,14 @@ namespace MyExcel
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //AboutBox1 about = new AboutBox1();
-            //about.Show();
+            AboutForm about = new ();
+            about.Show();
         }
 
         private void helpToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //Help about = new Help();
-            //about.Show();
+            HelpForm help = new HelpForm();
+            help.Show();
             //Process.Start(new ProcessStartInfo { FileName = @"https://github.com/LironeA/MyExcel", UseShellExecute = true });
         }
 

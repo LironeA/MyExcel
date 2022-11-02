@@ -41,6 +41,7 @@ namespace MyExel.Spreadsheet
                 {
                     GVCell.Value = this.formula.GetResult();
                     Calculate?.Invoke(true);
+                    GVCell.ErrorText = "";
                     return;
                 }
                 
@@ -48,6 +49,7 @@ namespace MyExel.Spreadsheet
                 if (this.formula != null && this.formula.RawData == value)
                 {
                     GVCell.Value = this.formula.GetResult();
+                    GVCell.ErrorText = "";
                     return;
                 }
                 if (GVCell.Value != null)
