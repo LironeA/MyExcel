@@ -30,7 +30,7 @@ namespace MyExel.Spreadsheet
 
             return false;
         }
-
+        //Function: Evaluate
         public void Evaluate(bool ReCalculate, int x = -1, int y = -1)
         {
             var GridView = Program.mainForm.dataGridView1;
@@ -45,8 +45,8 @@ namespace MyExel.Spreadsheet
             else
             {
                 GVCell = GridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
-                X = e.RowIndex;
-                Y = e.ColumnIndex;
+                X = e.ColumnIndex;
+                Y = e.RowIndex;
             }
             try
             {
@@ -86,11 +86,11 @@ namespace MyExel.Spreadsheet
                 GVCell.ErrorText = "Cant resolve operation for diferent types";
                 MessageBox.Show("Cant do operation on diferent types(bool + bool, bool + 1, ets )");
             }
-            /*catch (Exception ex)
+            catch (Exception ex)
             {
                 GVCell.Value = ex.Message;
                 GVCell.ErrorText = ex.Message;
-            }*/
+            }
 
         }
 

@@ -161,13 +161,21 @@ namespace MyExcel
         private void saveFile()
         {
             TextWriter writer = new StreamWriter(filePath);
-            writer.WriteLine(SpreadSheet.cells.GetLength(1).ToString());
             writer.WriteLine(SpreadSheet.cells.GetLength(0).ToString());
+            writer.WriteLine(SpreadSheet.cells.GetLength(1).ToString());
             for(int i = 0; i < SpreadSheet.cells.GetLength(0); i++)
             {
                 for (int j = 0; j < SpreadSheet.cells.GetLength(1); j++)
                 {
-                    writer.WriteLine(SpreadSheet.cells[i,j].formula.RawData);
+                    var data = SpreadSheet.cells[i, j].formula;
+                    if(data == null)
+                    {
+                        writer.WriteLine("");
+                    }
+                    else
+                    {
+                        writer.WriteLine(data.RawData);
+                    }      
                 }
             }
             writer.Close();
@@ -235,10 +243,18 @@ namespace MyExcel
             var y = Int32.Parse(textReader.ReadLine());
             for (int i = 0; i < x; i++)
             {
-                AddColumn(null,null);
+                AddColumn(null, null);
+            }
+
+            for (int i = 0; i < y; i++)
+            {
+                AddRow(null, null);
+            }
+
+            for (int i = 0; i < x; i++)
+            {
                 for (int j = 0; j < y; j++)
                 {
-                    AddRow(null, null);
                     var t = textReader.ReadLine();
                     if(t == "") continue;
                     SpreadSheet.cells[i, j].formula = new Parser.Formula(t);

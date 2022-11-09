@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("edi",["Delegate"],[["Edited",,[["MyExel.Spreadsheet.Cell",,,,0,"File:Spreadsheet/Cell.cs:MyExel.Spreadsheet.Cell.Edited","CSharpClass:MyExel.Spreadsheet.Cell:Edited"]]]]);

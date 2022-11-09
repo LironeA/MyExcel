@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("fil",["Variable"],[["filePath",,[["MyExcel.Form1",,,,0,"File:Form1.cs:MyExcel.Form1.filePath","CSharpClass:MyExcel.Form1:filePath"]]],["fileToolStripMenuItem",,[["MyExcel.Form1",,,,0,"File:Form1.Designer.cs:MyExcel.Form1.fileToolStripMenuItem","CSharpClass:MyExcel.Form1:fileToolStripMenuItem"]]]]);

@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("che",["Function"],[["CheckRecursion",,[["Parser.PointerToken",,,,0,"File:Parser/Token.cs:Parser.PointerToken.CheckRecursion","CSharpClass:Parser.PointerToken:CheckRecursion"]]]]);

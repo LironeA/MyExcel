@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("iss",["Function"],[["IsSubscribed",,[["MyExel.Spreadsheet.Cell",,,,0,"File:Spreadsheet/Cell.cs:MyExel.Spreadsheet.Cell.IsSubscribed","CSharpClass:MyExel.Spreadsheet.Cell:IsSubscribed"]]]]);

@@ -141,7 +141,7 @@
         {
             dynamic l = left;
             dynamic r = right;
-            return l < r;
+            return l > r;
         }
     }
 
@@ -161,7 +161,7 @@
         {
             dynamic l = left;
             dynamic r = right;
-            return l <= r;
+            return l >= r;
         }
     }
 

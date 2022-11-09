@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("exp",["Class"],[["Exponentiate",,[["Operations",,,,0,"File:Parser/Operations.cs:Operations.Exponentiate","CSharpClass:Operations.Exponentiate"]]]]);

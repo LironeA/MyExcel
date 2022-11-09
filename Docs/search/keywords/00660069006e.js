@@ -1,0 +1,1 @@
+﻿NDSearch.OnPrefixDataLoaded("fin",["Function"],[["findColumName",,[["MyExcel.Form1",,,,0,"File:Form1.cs:MyExcel.Form1.findColumName","CSharpClass:MyExcel.Form1:findColumName"]]],["FindMinInArray",,[["Parser.Parser",,,,0,"File:Parser/Parser.cs:Parser.Parser.FindMinInArray","CSharpClass:Parser.Parser:FindMinInArray"]]]]);
