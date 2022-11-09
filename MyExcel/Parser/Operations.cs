@@ -189,7 +189,7 @@
     {
         public bool Evaluate<TR, TL>(TR left, TL right)
         {
-            if (typeof(TR) != typeof(bool) && typeof(TR) != typeof(bool)) return default;
+            if (typeof(TR) != typeof(bool) || typeof(TR) != typeof(bool)) throw new Exception("Cant apply logical operations on ints");
             dynamic l = left;
             dynamic r = right;
             return l && r;
@@ -200,7 +200,7 @@
     {
         public bool Evaluate<TR, TL>(TR left, TL right)
         {
-            if (typeof(TR) != typeof(bool) && typeof(TR) != typeof(bool)) throw new Exception();
+            if (typeof(TR) != typeof(bool) || typeof(TR) != typeof(bool)) throw new Exception("Cant apply logical operations on ints");
             dynamic l = left;
             dynamic r = right;
             return l || r;
