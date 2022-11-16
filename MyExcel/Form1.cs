@@ -6,15 +6,13 @@ namespace MyExcel
 {
     public partial class Form1 : Form
     {
-        private string filePath = "";
+        
         public Form1()
         {
             InitializeComponent();
             this.dataGridView1.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(SpreadSheet.CellValueChanged);
             this.dataGridView1.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(SpreadSheet.CellBeginEdit);
             this.dataGridView1.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(SpreadSheet.CellEndEdit);
-            AddColumn(null, null);
-            AddRow(null, null);
         }
 
 
@@ -40,61 +38,25 @@ namespace MyExcel
 
         private void AddRow(object sender, EventArgs e)
         {
-            dataGridView1.Rows.Add();
-            SpreadSheet.UpdateSpreadSheet(true);
+            SpreadSheet.AddRow();
 
         }
 
         private void DeleteRow(object sender, EventArgs e)
         {
-            if (MessageBox.Show("R U sure?", "", MessageBoxButtons.OKCancel) == DialogResult.OK)
-            {
-                if (dataGridView1.Rows.Count <= 1)
-                {
-                    MessageBox.Show("Must be at least 1 row", "ERROR");
-                    return;
-                }
-                dataGridView1.Rows.RemoveAt(dataGridView1.Rows.Count - 1);
-            }
-            SpreadSheet.UpdateSpreadSheet(false);
+            SpreadSheet.DeleteRow();
         }
 
         private void AddColumn(object sender, EventArgs e)
         {
-            int ColumnCount = dataGridView1.ColumnCount;
-            string newColumnName = findColumName(ColumnCount + 1);
-            dataGridView1.Columns.Add(newColumnName, newColumnName);
-            dataGridView1.Columns[ColumnCount].SortMode = DataGridViewColumnSortMode.NotSortable;
-            SpreadSheet.UpdateSpreadSheet(true);
+            SpreadSheet.AddColumn();
         }
 
         private void DeleteColumn(object sender, EventArgs e)
         {
-            if (MessageBox.Show("Ви впевнені?", "", MessageBoxButtons.OKCancel) == DialogResult.OK)
-            {
-                if (dataGridView1.Columns.Count <= 1)
-                {
-                    MessageBox.Show("Must be at least 1 column", "ERROR");
-                    return;
-                }
-                dataGridView1.Columns.RemoveAt(dataGridView1.Columns.Count - 1);
-            }
-            SpreadSheet.UpdateSpreadSheet(false);
+            SpreadSheet.DeleteColumn();
         }
 
-        private string findColumName(int index)
-        {
-            string result = "";
-            int i = 0;
-            if (index % 26 == 0) i++;
-            for (; i < (int)index / 26; i++)
-            {
-                result += "A";
-            }
-
-            return result + (index % 26 == 0 ? "Z" : (char)(index % 26 + 64));
-
-        }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -115,7 +77,7 @@ namespace MyExcel
             {
                 if (MessageBox.Show("Зберегти файл?", "", MessageBoxButtons.OKCancel) == DialogResult.OK)
                 {
-                    if (filePath == "") saveAsToolStripMenuItem_Click(null, null);
+                    if (SpreadSheet.filePath == "") saveAsToolStripMenuItem_Click(null, null);
                     else saveToolStripMenuItem1_Click(null, null);
                 }
                 System.Windows.Forms.Application.Exit();
@@ -126,7 +88,7 @@ namespace MyExcel
         {
             if (MessageBox.Show("Хочете зберегти файл?", "", MessageBoxButtons.OKCancel) == DialogResult.OK)
             {
-                if (filePath == "") saveAsToolStripMenuItem_Click(null, null);
+                if (SpreadSheet.filePath == "") saveAsToolStripMenuItem_Click(null, null);
                 else saveToolStripMenuItem1_Click(null, null);
             }
             Application.Restart();
@@ -136,8 +98,8 @@ namespace MyExcel
         {
             try
             {
-                SaveDialog();
-                saveFile();
+                SpreadSheet.SaveDialog();
+                SpreadSheet.SaveFile();
             }
             catch (Exception ex)
             {
@@ -149,8 +111,8 @@ namespace MyExcel
         {
             try
             {
-                if (filePath == "") SaveDialog();
-                saveFile();
+                if (SpreadSheet.filePath == "") SpreadSheet.SaveDialog();
+                SpreadSheet.SaveFile();
             }
             catch (Exception ex)
             {
@@ -158,126 +120,29 @@ namespace MyExcel
             }
         }
 
-        private void saveFile()
-        {
-            TextWriter writer = new StreamWriter(filePath);
-            writer.WriteLine(SpreadSheet.cells.GetLength(0).ToString());
-            writer.WriteLine(SpreadSheet.cells.GetLength(1).ToString());
-            for(int i = 0; i < SpreadSheet.cells.GetLength(0); i++)
-            {
-                for (int j = 0; j < SpreadSheet.cells.GetLength(1); j++)
-                {
-                    var data = SpreadSheet.cells[i, j].formula;
-                    if(data == null)
-                    {
-                        writer.WriteLine("");
-                    }
-                    else
-                    {
-                        writer.WriteLine(data.RawData);
-                    }      
-                }
-            }
-            writer.Close();
-        }
+        
 
 
-        private void OpenDialog()
-        {
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
-            {
-                openFileDialog.InitialDirectory = "c:\\";
-                openFileDialog.Filter = "TXT|*.txt";
-                openFileDialog.RestoreDirectory = true;
-
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    filePath = openFileDialog.FileName;
-                } else
-                {
-                    return;
-                }
-                if (openFileDialog.FileName == "") throw new Exception("Incorect Name");
-            }
-        }
-
-        private void SaveDialog()
-        {
-            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
-            {
-                saveFileDialog.InitialDirectory = "c:\\";
-                saveFileDialog.Filter = "TXT|*.txt";
-                saveFileDialog.RestoreDirectory = true;
-
-                if (saveFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    filePath = saveFileDialog.FileName;
-                }
-                else
-                {
-                    return;
-                }
-                if (saveFileDialog.FileName == "") throw new Exception("Incorect Name");
-            }
-        }
+        
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (MessageBox.Show("Ви впевнені?", "", MessageBoxButtons.OKCancel) != DialogResult.OK) return;
             if (MessageBox.Show("Хочете зберегти файл?", "", MessageBoxButtons.OKCancel) == DialogResult.OK)
             {
-                if (filePath == "") saveAsToolStripMenuItem_Click(null, null);
+                if (SpreadSheet.filePath == "") saveAsToolStripMenuItem_Click(null, null);
                 else saveToolStripMenuItem1_Click(null, null);
             }
-            OpenFile();
+            SpreadSheet.OpenFile();
         }
 
-        private void OpenFile()
-        {
-            dataGridView1.Rows.Clear();
-            dataGridView1.Columns.Clear();
-            OpenDialog();
-            if (filePath == "") return;
-            TextReader textReader = new StreamReader(filePath);
-            var x = Int32.Parse(textReader.ReadLine());
-            var y = Int32.Parse(textReader.ReadLine());
-            for (int i = 0; i < x; i++)
-            {
-                AddColumn(null, null);
-            }
-
-            for (int i = 0; i < y; i++)
-            {
-                AddRow(null, null);
-            }
-
-            for (int i = 0; i < x; i++)
-            {
-                for (int j = 0; j < y; j++)
-                {
-                    var t = textReader.ReadLine();
-                    if(t == "") continue;
-                    SpreadSheet.cells[i, j].formula = new Parser.Formula(t);
-                    SpreadSheet.cells[i, j].e = new DataGridViewCellEventArgs(x-1, y-1);
-                    dataGridView1.Rows[j].Cells[i].Value = t;
-                    Parser.Parser.Parse(SpreadSheet.cells[i, j]);
-                }
-            }
-
-            for (int i = 0; i < x; i++)
-            {
-                for (int j = 0; j < y; j++)
-                {
-                    SpreadSheet.cells[i, j].Evaluate(false, i, j);
-                }
-            }
-        }
+        
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (MessageBox.Show("Хочете зберегти файл?", "", MessageBoxButtons.OKCancel) == DialogResult.OK)
             {
-                if (filePath == "") saveAsToolStripMenuItem_Click(null, null);
+                if (SpreadSheet.filePath == "") saveAsToolStripMenuItem_Click(null, null);
                 else saveToolStripMenuItem1_Click(null, null);
             }
         }

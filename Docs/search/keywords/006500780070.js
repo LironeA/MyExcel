@@ -1,1 +1,1 @@
-﻿NDSearch.OnPrefixDataLoaded("exp",["Class"],[["Exponentiate",,[["Operations",,,,0,"File:Parser/Operations.cs:Operations.Exponentiate","CSharpClass:Operations.Exponentiate"]]]]);
+﻿NDSearch.OnPrefixDataLoaded("exp",["Function","Class"],[["ExpandSpreadsheet",,[["MyExel.Spreadsheet.SpreadSheet",,,,0,"File:Spreadsheet/SpreadSheet.cs:MyExel.Spreadsheet.SpreadSheet.ExpandSpreadsheet","CSharpClass:MyExel.Spreadsheet.SpreadSheet:ExpandSpreadsheet"]]],["Exponentiate",,[["Operations",,,,1,"File:Parser/Operations.cs:Operations.Exponentiate","CSharpClass:Operations.Exponentiate"]]]]);

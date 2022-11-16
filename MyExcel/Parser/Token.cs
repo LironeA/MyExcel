@@ -81,10 +81,13 @@ namespace Parser
             cell.Calculate += thisCell.Evaluate;
             if (CheckRecursion())
             {
-                throw new Exception("Recursion");
+                cell.UnSubscribe();
+                //throw new Exception("Recursion");
             }
-            if (cell.formula == null) return cell.value;
-            else return cell.formula.GetResult();
+            var v = cell.Value;
+            if(v == null) return null;
+            if (v == "True" || v == "False" || v == "true" || v == "false") return Boolean.Parse(v);
+            else return Int64.Parse(v);
         }
 
         public static bool CheckRecursion()
